@@ -77,6 +77,7 @@ class Item(models.Model):
 
 
 class House(models.Model):
+    Nickname = models.CharField(max_length=50)
     street_address = models.CharField(max_length=255)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=2)
