@@ -1,5 +1,5 @@
 import re
-from .models import User, Message, Comment
+from .models import User, Item, HouseMembership, House, BalanceDue, BalanceOwed
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
@@ -9,7 +9,7 @@ from django.contrib import messages
 
 
 def index(request):
-    return render(request, "index.html")
+    return render(request, "login.html")
 
 
 def register(request):
@@ -25,7 +25,7 @@ def register(request):
         request.session['this_userid'] = new_user.id
         request.session['this_first_name'] = new_user.first_name
         messages.success(request, "You have successfully registered!")
-        return redirect('/wall')
+        return redirect('/profile')
 
 
 def login(request):
@@ -35,12 +35,34 @@ def login(request):
         messages.error(request, 'Invalid Email/Password')
         return redirect('/')
     user = User.objects.get(email=request.POST['email'])
-    request.session['this_userid'] = user.id
-    request.session['this_first_name'] = user.first_name
+    request.session['user_id'] = user.id
+    request.session['first_name'] = user.first_name
     messages.success(request, "You have successfully logged in!")
-    return redirect('/wall')
+    return redirect('/profile')
 
 
 def logout(request):
     request.session.clear()
     return redirect('/')
+
+
+################### Profile Methods ###################
+
+
+def profile(request):
+    if 'user_id' not in request.session:
+        return redirect('/')
+    context = {
+        # add notifications?
+        'user': User.objects.get(id=request.session['user_id'])
+    }
+    # add if statement to redirect to main_house if existing
+    return render(request, 'profile.html', context)
+
+
+def create_house(request):
+    pass
+
+
+def main_house(request, id):
+    pass
